@@ -1,0 +1,14 @@
+.card {
+  background: var(--panel);
+  padding: 18px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.center {
+  text-align: center;
+}

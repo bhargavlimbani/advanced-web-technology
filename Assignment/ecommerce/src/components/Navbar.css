@@ -1,0 +1,12 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background: #2874f0;
+  color: white;
+}
+
+.navbar input {
+  width: 300px;
+  padding: 5px;
+}

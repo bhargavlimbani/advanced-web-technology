@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User App</title>
+</head>
+<body>
+
+<h2>User Management</h2>
+
+<input type="hidden" id="userId">
+
+Name: <input type="text" id="name"><br><br>
+Email: <input type="email" id="email"><br><br>
+
+<button onclick="addUser()">Add</button>
+<button onclick="updateUser()">Update</button>
+
+<hr>
+
+<button onclick="getUsers()">Show Users</button>
+
+<div id="output"></div>
+
+<script>
+const API = "http://localhost:3000";
+
+// Add
+function addUser() {
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+
+    fetch(API + "/addUser", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, email})
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+        clearForm();
+        getUsers();
+    });
+}
+
+// Read
+function getUsers() {
+    fetch(API + "/users")
+    .then(res => res.json())
+    .then(data => {
+        let html = "";
+        data.forEach(user => {
+            html += `
+                <p>
+                    ${user.id} - ${user.name} - ${user.email}
+                    <button onclick="editUser(${user.id}, '${user.name}', '${user.email}')">Edit</button>
+                    <button onclick="deleteUser(${user.id})">Delete</button>
+                </p>
+            `;
+        });
+        document.getElementById("output").innerHTML = html;
+    });
+}
+
+// Fill for update
+function editUser(id, name, email) {
+    document.getElementById("userId").value = id;
+    document.getElementById("name").value = name;
+    document.getElementById("email").value = email;
+}
+
+// Update
+function updateUser() {
+    const id = document.getElementById("userId").value;
+    const name = document.getElementById("name").value;
+    const email = document.getElementById("email").value;
+
+    if (!id) {
+        alert("Select user first");
+        return;
+    }
+
+    fetch(API + "/updateUser/" + id, {
+        method: "PUT",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({name, email})
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+        clearForm();
+        getUsers();
+    });
+}
+
+// Delete
+function deleteUser(id) {
+    fetch(API + "/deleteUser/" + id, {
+        method: "DELETE"
+    })
+    .then(res => res.text())
+    .then(data => {
+        alert(data);
+        getUsers();
+    });
+}
+
+// Clear form
+function clearForm() {
+    document.getElementById("userId").value = "";
+    document.getElementById("name").value = "";
+    document.getElementById("email").value = "";
+}
+</script>
+
+</body>
+</html>
